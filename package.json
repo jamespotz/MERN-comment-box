@@ -1,0 +1,8 @@
+{
+  "name": "mern-comment-box",
+  "version": "1.0.0",
+  "description": "A simple MERN comment box",
+  "main": "app.js",
+  "author": "James Robert Rooke",
+  "license": "MIT"
+}
