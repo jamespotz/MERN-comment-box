@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 
@@ -10,13 +11,18 @@ const Comment = props => (
       <ReactMarkdown source={props.children} />
     </div>
     <div className="singleCommentButtons">
+      <a onClick={() => { props.handleUpdateComment(props.id); }}>update</a>
+      <a onClick={() => { props.handleDeleteComment(props.id); }}>delete</a>
     </div>
   </div>
 );
 
 Comment.propTypes = {
   author: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  children: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  handleUpdateComment: PropTypes.func.isRequired,
+  handleDeleteComment: PropTypes.func.isRequired,
   timestamp: PropTypes.string.isRequired,
 };
 

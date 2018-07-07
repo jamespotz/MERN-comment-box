@@ -11,7 +11,7 @@ const router = express.Router();
 
 const API_PORT = process.env.API_PORT || 3001;
 
-mongoose.connect(getSecret('dbUri'));
+mongoose.connect(getSecret('dbUri'), { useNewUrlParser: true } );
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -30,7 +30,7 @@ router.get('/comments', (request, response) => {
   });
 });
 
-router.post('comments', (request, response) => {
+router.post('/comments', (request, response) => {
   const comment = new Comment();
   const { author, text } = request.body;
   if (!author || !text) {
@@ -46,6 +46,40 @@ router.post('comments', (request, response) => {
     if (error) return response.json({ success: false, error: error });
     return response.json({ success: true });
   });
+});
+
+router.put('/comments/:commentId', (request, response) => {
+  const { commentId } = request.params;
+  if (!commentId) {
+    return response.json({
+      success: false,
+      error: 'No comment id provided'
+    });
+  }
+  Comment.findById(commentId, (error, comment) => {
+    if (error) return response.json({ success: false, error: error });
+    const { author, text } = request.body;
+    if (author) comment.author = author;
+    if (text) comment.text = text;
+    comment.save(error => {
+      if (error) return response.json({ success: false, error: error });
+      return response.json({ success: true });
+    });
+  });
+});
+
+router.delete('/comments/:commentId', (request, response) => {
+  const { commentId } = request.params;
+  if (!commentId) {
+    return response.json({
+      success: false,
+      error: 'No comment id provided'
+    });
+  }
+  Comment.remove({ _id: commentId }, (error, comment) => {
+    if (error) return response.json({ success: false, error: error });
+    return response.json({ success: true });
+  })
 });
 
 app.use('/api', router);
